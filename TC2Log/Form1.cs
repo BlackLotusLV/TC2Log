@@ -13,17 +13,16 @@ namespace TC2Log
 {
     public partial class Form1 : Form
     {
-        int[,] nr1 = new int[,] { { 103, 967 }, { 116, 944 }, { 91, 944 }, { 103, 944 }, { 103, 936 }, { 103, 954 }, { 92, 950 } };
-        int[,] nr2 = new int[,] { { 148, 967 }, { 160, 944 }, { 135, 944 }, { 147, 944 }, { 147, 936 }, { 147, 954 }, { 136, 950 } };
-        int[,] nr3 = new int[,] { { 192, 967 }, { 204, 944 }, { 179, 944 }, { 191, 944 }, { 191, 936 }, { 191, 954 }, { 180, 950 } };
+        int[,] Bold = new int[,] { { 0, 0 }, { 13, 0 }, { 26, 0 }, { 0, 13 }, { 13, 13 }, { 26, 13 }, { 0, 24 }, { 13, 26 }, { 24, -13 } };
+        int[,] CarSpeedLoc = { { 92, 940 }, { 136, 940 }, { 180, 940 } };
 
         int x;
         int y;
 
         public Form1()
         {
-            x = nr1[6, 0];
-            y = nr1[6, 1];
+            x = Bold[6,0]+136;
+            y = Bold[6, 1]+940;
 
             InitializeComponent();
             this.TopMost = true;
@@ -37,8 +36,8 @@ namespace TC2Log
         {
             var title = "TheCrew2";
             var hwnd = FindWindowByCaption(title);
-            label1.Text = Win32.GetPixelColor(hwnd, x, y).ToString();
-            label1.BackColor = Win32.GetPixelColor(hwnd, x, y);
+            label2.Text = Win32.GetPixelColor(hwnd, x, y).ToString();
+            label2.BackColor = Win32.GetPixelColor(hwnd, x, y);
         }
         bool IsWhite(int x,int y)
         {
@@ -46,7 +45,9 @@ namespace TC2Log
             var title = "TheCrew2";
             var hwnd = FindWindowByCaption(title);
             Color white = Color.FromArgb(255, 255, 255, 255);
-            if (Win32.GetPixelColor(hwnd,x,y)==white)
+            Color white2 = Color.FromArgb(255, 250, 250, 250);
+            Color pixel = Win32.GetPixelColor(hwnd, x, y);
+            if ((pixel.R <= white.R && pixel.R >= white2.R)&& (pixel.G <= white.G && pixel.G >= white2.G)&& (pixel.B <= white.B && pixel.B >= white2.B))
             {
                 iswhite = true;
             }
@@ -63,9 +64,9 @@ namespace TC2Log
 
         private void Fps_Tick(object sender, EventArgs e)
         {
-            UpdateSpeed(speed, nr1);
-            UpdateSpeed(speed2, nr2);
-            UpdateSpeed(speed3, nr3);
+            speed.Text = GetBoldNumber(CarSpeedLoc[0,0], CarSpeedLoc[0, 1]);
+            speed2.Text = GetBoldNumber(CarSpeedLoc[1, 0], CarSpeedLoc[1, 1]);
+            speed3.Text = GetBoldNumber(CarSpeedLoc[2, 0], CarSpeedLoc[2, 1]);
             ChangeColour(x, y);
             int maxspeed, spdcheck;
             int.TryParse(speed.Text + speed2.Text + speed3.Text,out maxspeed);
@@ -75,53 +76,51 @@ namespace TC2Log
                 MaxSpd.Text = maxspeed.ToString();
             }
         }
-        private void UpdateSpeed(Label label, int[,] nr)
-        {
 
-            if (IsWhite(nr2[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && !IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && !IsWhite(nr[5, 0], nr[5, 1]) && IsWhite(nr[6, 0], nr[6, 1]))
+        private string GetBoldNumber(int x,int y)
+        {
+            string number="-";
+            if (IsWhite(Bold[1, 0]+x, Bold[1, 1]+y) && IsWhite(Bold[4, 0]+x, Bold[4, 1]+y) && IsWhite(Bold[7, 0]+x, Bold[7, 1]+y))
             {
-                label.Text = "0";
+                number = "1";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && !IsWhite(nr[1, 0], nr[1, 1]) && !IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && IsWhite(nr[4, 0], nr[4, 1]) && IsWhite(nr[5, 0], nr[5, 1]) && !IsWhite(nr[6, 0], nr[6, 1]))
+            else if (!IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && !IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && !IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && !IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "1";
+                number = "2";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && !IsWhite(nr[2, 0], nr[2, 1]) && !IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && IsWhite(nr[5, 0], nr[5, 1]) && !IsWhite(nr[6, 0], nr[6, 1]))
+            else if (!IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && !IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && !IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "2";
+                number = "3";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && !IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && IsWhite(nr[4, 0], nr[4, 1]) && !IsWhite(nr[5, 0], nr[5, 1]) && !IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && !IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && !IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && !IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && !IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "3";
+                number = "4";
             }
-            else if (!IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && !IsWhite(nr[3, 0], nr[3, 1]) && IsWhite(nr[4, 0], nr[4, 1]) && IsWhite(nr[5, 0], nr[5, 1]) && IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && !IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && !IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "4";
+                number = "5";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && !IsWhite(nr[5, 0], nr[5, 1]) && !IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && !IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && !IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "5";
+                number = "6";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && IsWhite(nr[4, 0], nr[4, 1]) && !IsWhite(nr[5, 0], nr[5, 1]) && IsWhite(nr[6, 0], nr[6, 1]))
+            else if (!IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && !IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && !IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && !IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "6";
+                number = "7";
             }
-            else if (!IsWhite(nr[0, 0], nr[0, 1]) && !IsWhite(nr[1, 0], nr[1, 1]) && !IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && IsWhite(nr[5, 0], nr[5, 1]) && !IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && !IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && !IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "7";
+                number = "8";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && !IsWhite(nr[5, 0], nr[5, 1]) && IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && !IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && !IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && !IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && !IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "8";
+                number = "9";
             }
-            else if (IsWhite(nr[0, 0], nr[0, 1]) && IsWhite(nr[1, 0], nr[1, 1]) && IsWhite(nr[2, 0], nr[2, 1]) && IsWhite(nr[3, 0], nr[3, 1]) && !IsWhite(nr[4, 0], nr[4, 1]) && IsWhite(nr[5, 0], nr[5, 1]) && IsWhite(nr[6, 0], nr[6, 1]))
+            else if (IsWhite(Bold[0, 0] + x, Bold[0, 1] + y) && !IsWhite(Bold[1, 0] + x, Bold[1, 1] + y) && IsWhite(Bold[2, 0] + x, Bold[2, 1] + y) && IsWhite(Bold[3, 0] + x, Bold[3, 1] + y) && !IsWhite(Bold[4, 0] + x, Bold[4, 1] + y) && IsWhite(Bold[5, 0] + x, Bold[5, 1] + y) && IsWhite(Bold[6, 0] + x, Bold[6, 1] + y) && IsWhite(Bold[7, 0] + x, Bold[7, 1] + y) && IsWhite(Bold[8, 0] + x, Bold[8, 1] + y))
             {
-                label.Text = "9";
+                number = "0";
             }
-            else
-            {
-                label.Text = "-";
-            }
+            return number;
         }
 
         private void ResetMaxSpeedToolStripMenuItem_Click(object sender, EventArgs e)
